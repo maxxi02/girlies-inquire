@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react'
+import { useState, useEffect, type FormEvent } from 'react'
 import './index.css'
 import './App.css'
 
@@ -132,7 +132,23 @@ function AppointmentForm() {
   const [loading, setLoading] = useState(false)
   const [toast, setToast] = useState<ToastState>(null)
 
+  const [bookedSlots, setBookedSlots] = useState<string[]>([])
+
   const showToast = (t: ToastState) => { setToast(t); setTimeout(() => setToast(null), 6000) }
+
+  // Fetch booked slots when date changes
+  useEffect(() => {
+    if (!form.preferredDate) {
+      setBookedSlots([])
+      return
+    }
+    fetch(`${API}/api/public/appointments/slots?date=${form.preferredDate}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.bookedSlots) setBookedSlots(data.bookedSlots)
+      })
+      .catch(console.error)
+  }, [form.preferredDate])
 
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setForm(f => ({ ...f, [k]: e.target.value }))
@@ -195,9 +211,13 @@ function AppointmentForm() {
           </div>
           <div className="field">
             <label htmlFor="appt-time">Preferred Time <span style={{ color: 'var(--rose-500)' }}>*</span></label>
-            <select id="appt-time" value={form.preferredTime} onChange={set('preferredTime')} required>
-              <option value="">Select time slot</option>
-              {TIME_SLOTS.map(t => <option key={t} value={t}>{t}</option>)}
+            <select id="appt-time" value={form.preferredTime} onChange={set('preferredTime')} required disabled={!form.preferredDate}>
+              <option value="">{form.preferredDate ? 'Select time slot' : 'Select a date first'}</option>
+              {TIME_SLOTS.map(t => (
+                <option key={t} value={t} disabled={bookedSlots.includes(t)}>
+                  {t} {bookedSlots.includes(t) ? '(Booked)' : ''}
+                </option>
+              ))}
             </select>
           </div>
         </div>
