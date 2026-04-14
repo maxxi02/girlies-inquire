@@ -1,0 +1,126 @@
+/* ── Layout ── */
+.page { display: flex; flex-direction: column; min-height: 100vh; }
+
+/* ── Navbar ── */
+.navbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 2.5rem;
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 50;
+}
+.navbar-brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+.navbar-logo { width: 44px; height: 44px; border-radius: 12px; object-fit: contain; }
+.navbar-name { font-family: var(--font-serif); font-size: 1.15rem; color: var(--rose-700); font-weight: 700; }
+.navbar-tagline { font-size: 0.75rem; color: var(--muted); font-weight: 400; }
+
+/* ── Hero ── */
+.hero {
+  padding: 5rem 2rem 4rem;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(59,130,246,.12), transparent);
+  pointer-events: none;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: var(--rose-100); color: var(--rose-700);
+  font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 0.35rem 1rem; border-radius: 99px;
+  margin-bottom: 1.5rem;
+}
+.hero h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 700; line-height: 1.15;
+  color: var(--text); margin-bottom: 1rem;
+}
+.hero h1 span { color: var(--rose-500); }
+.hero p {
+  max-width: 520px; margin: 0 auto 2.5rem;
+  color: var(--muted); font-size: 1.05rem; line-height: 1.7;
+}
+.hero-cards {
+  display: flex; justify-content: center; gap: 1.25rem; flex-wrap: wrap;
+}
+.hero-card {
+  background: white; border-radius: var(--radius-md);
+  border: 1.5px solid var(--border);
+  padding: 1.25rem 2rem;
+  display: flex; align-items: center; gap: 0.75rem;
+  box-shadow: var(--shadow-sm);
+  font-size: 0.9rem; color: var(--muted);
+}
+.hero-card em { font-size: 1.4rem; font-style: normal; }
+.hero-card strong { display: block; color: var(--text); font-weight: 600; font-size: 0.95rem; }
+
+/* ── Main Grid ── */
+.forms-section {
+  max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 5rem;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+}
+@media (max-width: 860px) { .forms-section { grid-template-columns: 1fr; } }
+
+/* ── Card ── */
+.form-card {
+  background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(12px);
+  border-radius: var(--radius-lg);
+  border: 1.5px solid var(--border);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.form-card-header {
+  padding: 1.75rem 2rem;
+  background: linear-gradient(120deg, var(--rose-50), var(--blush));
+  border-bottom: 1.5px solid var(--border);
+}
+.form-card-icon {
+  width: 48px; height: 48px; border-radius: 14px;
+  background: linear-gradient(135deg, var(--rose-500), var(--pink-500));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; margin-bottom: 0.9rem;
+  box-shadow: 0 4px 14px rgba(59,130,246,.3);
+}
+.form-card-header h2 {
+  font-family: var(--font-serif); font-size: 1.5rem; font-weight: 700;
+  color: var(--text); margin-bottom: 0.3rem;
+}
+.form-card-header p { font-size: 0.88rem; color: var(--muted); line-height: 1.5; }
+.form-card-body { padding: 1.75rem 2rem; flex: 1; display: flex; flex-direction: column; gap: 1rem; }
+
+/* ── Form fields ── */
+.field { display: flex; flex-direction: column; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+@media (max-width: 480px) { .field-row { grid-template-columns: 1fr; } }
+
+/* ── Divider ── */
+.divider {
+  display: flex; align-items: center; gap: 0.75rem;
+  margin: 0.25rem 0; color: var(--muted); font-size: 0.78rem; font-weight: 600; text-transform: uppercase;
+}
+.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ── Footer ── */
+.footer {
+  padding: 1.5rem 2rem;
+  text-align: center;
+  font-size: 0.82rem; color: var(--muted);
+  border-top: 1px solid var(--border);
+  background: rgba(255,255,255,0.6);
+}
+.footer a { color: var(--rose-600); text-decoration: none; }
+.footer a:hover { text-decoration: underline; }
+
+/* ── Pulse dot animation ── */
+@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+.live-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #22c55e;
+  animation: pulse 1.6s ease-in-out infinite;
+}
