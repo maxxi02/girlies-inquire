@@ -2,7 +2,7 @@ import { useState, useEffect, type FormEvent } from 'react'
 import './index.css'
 import './App.css'
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+const API = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://girlies-birthing-server.onrender.com' : 'http://localhost:3000')
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 type ToastState = { type: 'success' | 'error'; msg: string } | null
