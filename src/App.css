@@ -72,10 +72,10 @@
   border-radius: var(--radius-lg);
   border: 1.5px solid var(--border);
   box-shadow: var(--shadow-md);
-  overflow: hidden;
   display: flex; flex-direction: column;
 }
 .form-card-header {
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   padding: 1.75rem 2rem;
   background: linear-gradient(120deg, var(--rose-50), var(--blush));
   border-bottom: 1.5px solid var(--border);

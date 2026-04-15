@@ -187,7 +187,7 @@ function ReasonSelect({ value, onChange }: { value: string; onChange: (v: string
       {open && (
         <ul style={{
           position: 'absolute', zIndex: 50, top: 'calc(100% + 4px)', left: 0, right: 0,
-          background: 'var(--surface)', border: '1.5px solid var(--border)', borderRadius: 10,
+          background: 'var(--white)', border: '1.5px solid var(--border)', borderRadius: 10,
           maxHeight: 220, overflowY: 'auto', margin: 0, padding: '4px 0', listStyle: 'none',
           boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
         }}>
