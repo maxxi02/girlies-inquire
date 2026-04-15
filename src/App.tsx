@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, type FormEvent } from 'react'
 import './index.css'
 import './App.css'
+import { sanitizeInput, validateEmail, validatePhone, checkRateLimit } from './security'
 
 const API = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://girlies-birthing-server.onrender.com' : 'http://localhost:3000')
 
@@ -250,12 +251,32 @@ function AppointmentForm() {
       showToast({ type: 'error', msg: 'Please fill in all required fields.' })
       return
     }
+    if (!validateEmail(email)) {
+      showToast({ type: 'error', msg: 'Please enter a valid email address.' })
+      return
+    }
+    if (form.phone && !validatePhone(form.phone)) {
+      showToast({ type: 'error', msg: 'Please enter a valid phone number.' })
+      return
+    }
+    if (!checkRateLimit('appointment-submit', 3, 300000)) {
+      showToast({ type: 'error', msg: 'Too many submissions. Please wait 5 minutes.' })
+      return
+    }
     setLoading(true)
     try {
+      const sanitized = {
+        fullName: sanitizeInput(fullName, 100),
+        email: sanitizeInput(email, 100),
+        phone: sanitizeInput(form.phone, 20),
+        preferredDate: sanitizeInput(preferredDate, 20),
+        preferredTime: sanitizeInput(preferredTime, 50),
+        reason: sanitizeInput(reason, 100),
+      }
       const res = await fetch(`${API}/api/public/appointments`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+        body: JSON.stringify(sanitized),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Something went wrong.')
