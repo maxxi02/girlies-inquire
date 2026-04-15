@@ -1,4 +1,4 @@
-import { useState, useEffect, type FormEvent } from 'react'
+import { useState, useEffect, useRef, type FormEvent } from 'react'
 import './index.css'
 import './App.css'
 
@@ -157,6 +157,61 @@ const REASONS = [
   'Other',
 ]
 
+// ── Reason Select ─────────────────────────────────────────────────────────────
+function ReasonSelect({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false) }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
+  return (
+    <div ref={ref} style={{ position: 'relative' }}>
+      <button
+        type="button"
+        id="appt-reason"
+        onClick={() => setOpen(o => !o)}
+        style={{
+          width: '100%', textAlign: 'left', background: 'var(--surface)',
+          border: '1.5px solid var(--border)', borderRadius: 10, padding: '10px 2.5rem 10px 14px',
+          fontSize: '0.92rem', color: value ? 'var(--text)' : 'var(--muted)', cursor: 'pointer',
+          backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23ec4899'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E\")",
+          backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center', backgroundSize: 18,
+        }}
+      >
+        {value || 'Select reason…'}
+      </button>
+      {open && (
+        <ul style={{
+          position: 'absolute', zIndex: 50, top: 'calc(100% + 4px)', left: 0, right: 0,
+          background: 'var(--surface)', border: '1.5px solid var(--border)', borderRadius: 10,
+          maxHeight: 220, overflowY: 'auto', margin: 0, padding: '4px 0', listStyle: 'none',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
+        }}>
+          {REASONS.map(r => (
+            <li
+              key={r}
+              onClick={() => { onChange(r); setOpen(false) }}
+              style={{
+                padding: '9px 14px', fontSize: '0.92rem', cursor: 'pointer',
+                color: r === value ? 'var(--rose-600)' : 'var(--text)',
+                background: r === value ? 'oklch(0.97 0.02 0)' : 'transparent',
+              }}
+              onMouseEnter={e => (e.currentTarget.style.background = 'oklch(0.97 0.02 0)')}
+              onMouseLeave={e => (e.currentTarget.style.background = r === value ? 'oklch(0.97 0.02 0)' : 'transparent')}
+            >
+              {r}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  )
+}
+
 function AppointmentForm() {
   const today = new Date().toISOString().split('T')[0]
   const [form, setForm] = useState({
@@ -293,10 +348,7 @@ function AppointmentForm() {
 
         <div className="field">
           <label htmlFor="appt-reason">Reason for Visit <span style={{ color: 'var(--rose-500)' }}>*</span></label>
-          <select id="appt-reason" value={form.reason} onChange={set('reason')} required>
-            <option value="">Select reason…</option>
-            {REASONS.map(r => <option key={r} value={r}>{r}</option>)}
-          </select>
+          <ReasonSelect value={form.reason} onChange={v => setForm(f => ({ ...f, reason: v }))} />
         </div>
 
         <Toast toast={toast} />
