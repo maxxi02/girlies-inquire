@@ -257,7 +257,7 @@ function AppointmentForm() {
         </div>
 
         <div className="field">
-          <label htmlFor="appt-reason">Reason for Visi.t <span style={{ color: 'var(--rose-500)' }}>*</span></label>
+          <label htmlFor="appt-reason">Reason for Visit <span style={{ color: 'var(--rose-500)' }}>*</span></label>
           <select id="appt-reason" value={form.reason} onChange={set('reason')} required>
             <option value="">Select reason…</option>
             {REASONS.map(r => <option key={r} value={r}>{r}</option>)}
