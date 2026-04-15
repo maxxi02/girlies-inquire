@@ -249,8 +249,10 @@ function AppointmentForm() {
 
 // ── App ───────────────────────────────────────────────────────────────────────
 export default function App() {
+  const [activeTab, setActiveTab] = useState<'inquiry' | 'appointment' | null>(null)
+
   return (
-    <div className="page">
+    <div className="page" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       {/* Navbar */}
       <nav className="navbar">
         <a href="#" className="navbar-brand">
@@ -267,7 +269,7 @@ export default function App() {
       </nav>
 
       {/* Hero */}
-      <section className="hero">
+      <section className="hero" style={{ paddingBottom: activeTab ? '2rem' : '6rem', flex: activeTab ? 'none' : '1' }}>
         <div className="hero-badge">
           <div className="live-dot" /> Patient Portal
         </div>
@@ -275,39 +277,55 @@ export default function App() {
         <p>
           Send us an inquiry or book an appointment online. Your confirmation will be sent directly to your Gmail.
         </p>
-        <div className="hero-cards">
-          <div className="hero-card">
-            <em>🕐</em>
-            <div>
-              <strong>Mon – Sat</strong>
-              8:00 AM – 5:00 PM
-            </div>
-          </div>
-          <div className="hero-card">
-            <em>📍</em>
-            <div>
-              <strong>In-Person</strong>
-              Girlie's Birthing Home
-            </div>
-          </div>
-          <div className="hero-card">
-            <em>📧</em>
-            <div>
-              <strong>Email Response</strong>
-              Within 24 hours
-            </div>
-          </div>
+
+        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '2.5rem', flexWrap: 'wrap' }}>
+          <button 
+            className="btn-primary"
+            style={{ 
+              background: activeTab === 'inquiry' ? 'var(--rose-600)' : 'white', 
+              color: activeTab === 'inquiry' ? 'white' : 'var(--rose-600)',
+              border: '2px solid var(--rose-600)',
+              transition: 'all 0.2s ease',
+              width: 'auto',
+              minWidth: '200px',
+              padding: '12px 24px',
+              cursor: 'pointer'
+            }}
+            onClick={() => setActiveTab(activeTab === 'inquiry' ? null : 'inquiry')}
+          >
+            💬 Send an Inquiry
+          </button>
+          <button 
+            className="btn-primary"
+            style={{ 
+              background: activeTab === 'appointment' ? 'var(--rose-600)' : 'white', 
+              color: activeTab === 'appointment' ? 'white' : 'var(--rose-600)',
+              border: '2px solid var(--rose-600)',
+              transition: 'all 0.2s ease',
+              width: 'auto',
+              minWidth: '200px',
+              padding: '12px 24px',
+              cursor: 'pointer'
+            }}
+            onClick={() => setActiveTab(activeTab === 'appointment' ? null : 'appointment')}
+          >
+            📅 Book an Appointment
+          </button>
         </div>
       </section>
 
       {/* Forms */}
-      <main className="forms-section">
-        <InquiryForm />
-        <AppointmentForm />
-      </main>
+      {activeTab && (
+        <main className="forms-section" style={{ display: 'flex', justifyContent: 'center' }}>
+          <div style={{ maxWidth: '640px', width: '100%', animation: 'fadeIn 0.4s ease-out' }}>
+            {activeTab === 'inquiry' && <InquiryForm />}
+            {activeTab === 'appointment' && <AppointmentForm />}
+          </div>
+        </main>
+      )}
 
       {/* Footer */}
-      <footer className="footer">
+      <footer className="footer" style={{ marginTop: 'auto' }}>
         © {new Date().getFullYear()} Girlie's Birthing Home. All rights reserved.
         &nbsp;·&nbsp; For emergencies please call your nearest hospital.
       </footer>
