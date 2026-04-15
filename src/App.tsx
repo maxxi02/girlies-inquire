@@ -165,6 +165,7 @@ function AppointmentForm() {
   })
   const [loading, setLoading] = useState(false)
   const [toast, setToast] = useState<ToastState>(null)
+  const [submitted, setSubmitted] = useState(false)
 
   const [bookedSlots, setBookedSlots] = useState<string[]>([])
 
@@ -203,13 +204,47 @@ function AppointmentForm() {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Something went wrong.')
-      showToast({ type: 'success', msg: data.message })
-      setForm({ fullName: '', email: '', phone: '', preferredDate: '', preferredTime: '', reason: '' })
+      setSubmitted(true)
     } catch (err: unknown) {
       showToast({ type: 'error', msg: err instanceof Error ? err.message : 'Failed to submit appointment.' })
     } finally {
       setLoading(false)
     }
+  }
+
+  if (submitted) {
+    return (
+      <div className="form-card">
+        <div className="form-card-body" style={{ textAlign: 'center', padding: '3rem 2rem' }}>
+          <div style={{
+            width: 64, height: 64, borderRadius: '50%',
+            background: 'oklch(0.97 0.02 150)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            margin: '0 auto 1.5rem',
+          }}>
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="oklch(0.55 0.18 150)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </div>
+          <h2 style={{ fontSize: '1.35rem', fontWeight: 700, color: 'var(--text)', marginBottom: '0.5rem' }}>
+            Appointment Requested!
+          </h2>
+          <p style={{ color: 'var(--muted)', fontSize: '0.92rem', lineHeight: 1.6, marginBottom: '0.25rem' }}>
+            Thank you, <strong style={{ color: 'var(--text)' }}>{form.fullName}</strong>. We've received your request.
+          </p>
+          <p style={{ color: 'var(--muted)', fontSize: '0.92rem', lineHeight: 1.6, marginBottom: '2rem' }}>
+            A confirmation will be sent to <strong style={{ color: 'var(--text)' }}>{form.email}</strong> once we review your schedule.
+          </p>
+          <button
+            className="btn-primary"
+            style={{ width: 'auto', padding: '10px 28px', margin: '0 auto' }}
+            onClick={() => { setSubmitted(false); setForm({ fullName: '', email: '', phone: '', preferredDate: '', preferredTime: '', reason: '' }) }}
+          >
+            Book Another Appointment
+          </button>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -245,7 +280,7 @@ function AppointmentForm() {
           </div>
           <div className="field">
             <label htmlFor="appt-time">Preferred Time <span style={{ color: 'var(--rose-500)' }}>*</span></label>
-            <select id="appt-time" value={form.preferredTime} onChange={set('preferredTime')} required disabled={!form.preferredDate}>
+            <select id="appt-time" value={form.preferredTime} onChange={set('preferredTime')} required disabled={!form.preferredDate} style={{ opacity: form.preferredDate ? 1 : 0.4, cursor: form.preferredDate ? 'auto' : 'not-allowed' }}>
               <option value="">{form.preferredDate ? 'Select time slot' : 'Select a date first'}</option>
               {TIME_SLOTS.map(t => (
                 <option key={t} value={t} disabled={bookedSlots.includes(t)}>
