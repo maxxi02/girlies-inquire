@@ -27,6 +27,7 @@ function InquiryForm() {
   const [form, setForm] = useState({ fullName: '', email: '', phone: '', message: '' })
   const [loading, setLoading] = useState(false)
   const [toast, setToast] = useState<ToastState>(null)
+  const [submitted, setSubmitted] = useState(false)
 
   const showToast = (t: ToastState) => { setToast(t); setTimeout(() => setToast(null), 5000) }
 
@@ -48,13 +49,47 @@ function InquiryForm() {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Something went wrong.')
-      showToast({ type: 'success', msg: data.message })
-      setForm({ fullName: '', email: '', phone: '', message: '' })
+      setSubmitted(true)
     } catch (err: unknown) {
       showToast({ type: 'error', msg: err instanceof Error ? err.message : 'Failed to send inquiry.' })
     } finally {
       setLoading(false)
     }
+  }
+
+  if (submitted) {
+    return (
+      <div className="form-card">
+        <div className="form-card-body" style={{ textAlign: 'center', padding: '3rem 2rem' }}>
+          <div style={{
+            width: 64, height: 64, borderRadius: '50%',
+            background: 'oklch(0.97 0.02 150)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            margin: '0 auto 1.5rem',
+          }}>
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="oklch(0.55 0.18 150)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </div>
+          <h2 style={{ fontSize: '1.35rem', fontWeight: 700, color: 'var(--text)', marginBottom: '0.5rem' }}>
+            Inquiry Sent!
+          </h2>
+          <p style={{ color: 'var(--muted)', fontSize: '0.92rem', lineHeight: 1.6, marginBottom: '0.25rem' }}>
+            Thank you, <strong style={{ color: 'var(--text)' }}>{form.fullName}</strong>. We've received your message.
+          </p>
+          <p style={{ color: 'var(--muted)', fontSize: '0.92rem', lineHeight: 1.6, marginBottom: '2rem' }}>
+            We'll get back to you at <strong style={{ color: 'var(--text)' }}>{form.email}</strong> within 24 hours.
+          </p>
+          <button
+            className="btn-primary"
+            style={{ width: 'auto', padding: '10px 28px', margin: '0 auto' }}
+            onClick={() => { setSubmitted(false); setForm({ fullName: '', email: '', phone: '', message: '' }) }}
+          >
+            Send Another Inquiry
+          </button>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -98,7 +133,6 @@ function InquiryForm() {
     </div>
   )
 }
-
 // ── Appointment Form ──────────────────────────────────────────────────────────
 const TIME_SLOTS = [
   '8:00 AM – 9:00 AM',
